@@ -11,11 +11,11 @@ find_program(PROTOC_PATH protoc)
 find_program(GRPC_CPP_PLUGIN_PATH grpc_cpp_plugin)
 
 set(PROTO_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../contract")
-set(PROTO_FILE "${PROTO_DIR}/helloworld.proto")
+set(PROTO_FILE "${PROTO_DIR}/chat.proto")
 
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${PROTO_FILE})
-set(GRPC_SRCS "${CMAKE_CURRENT_BINARY_DIR}/helloworld.grpc.pb.cc")
-set(GRPC_HDRS "${CMAKE_CURRENT_BINARY_DIR}/helloworld.grpc.pb.h")
+set(GRPC_SRCS "${CMAKE_CURRENT_BINARY_DIR}/chat.grpc.pb.cc")
+set(GRPC_HDRS "${CMAKE_CURRENT_BINARY_DIR}/chat.grpc.pb.h")
 
 add_custom_command(
     OUTPUT "${GRPC_SRCS}" "${GRPC_HDRS}"

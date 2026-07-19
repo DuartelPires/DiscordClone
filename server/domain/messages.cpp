@@ -1,13 +1,15 @@
+#pragma once
 #include <iostream>
 #include <string>
 
 using namespace std;
 
 class Message {
-  public:
+  private:
     int userId;
     string userText;
 
+  public:
     Message(int userId, string userText)
         : userId(userId), userText(userText){
     }

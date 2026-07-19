@@ -2,53 +2,47 @@
 #include <memory>
 #include <string>
 
-#include "domain/serverState.cpp"
+#include "ChatServiceImpl.cpp"
 #include <grpcpp/grpcpp.h>
-#include "helloworld.pb.h"
-#include "helloworld.grpc.pb.h"
+#include "chat.pb.h"
+#include "chat.grpc.pb.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
+using grpc::ServerWriter;
 using grpc::Status;
-using helloworld::Greeter;
-using helloworld::HelloReply;
-using helloworld::HelloRequest;
+
+using chat::ChatService;
+using chat::SendRequest;
+using chat::SendResponse;
+using chat::UserIdRequest;
+using chat::UserIdResponse;
+using chat::ChatMessage;
 
 using namespace std;
 
-class GreeterServiceImpl final : public Greeter::Service {
-private:
-    ServerState* currentState;
-
-public:
-    // Construtor
-    explicit GreeterServiceImpl(ServerState* currentState) : currentState(currentState) {}
-
-    Status SayHello(ServerContext* context, const HelloRequest* request,
-                    HelloReply* reply) override {
-
-        reply->set_message(currentState->getLatestUserId());
-        return Status::OK;
-    }
-};
-
 void RunServer(ServerState& currentState) {
-    // Escuta todas as interfaces da rede na porta 50051
+    //ouve todas as interfaces da rede na porta 50051
     string server_address("0.0.0.0:50051");
-    GreeterServiceImpl service(&currentState);
+    ChatServiceImpl service(&currentState);
 
     ServerBuilder builder;
-    // Configura a porta sem autenticação (Insecure)
+    
+    //aumenta o limite de threads para suportar dezenas de clientes em streams síncronos
+    grpc::ResourceQuota quota;
+    quota.SetMaxThreads(500);
+    builder.SetResourceQuota(quota);
+
+    //insecure
     builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
-    // Regista o serviço que criamos acima
     builder.RegisterService(&service);
 
-    // Inicializa o servidor
+    //inicia o servidor
     unique_ptr<Server> server(builder.BuildAndStart());
     cout << "Servidor rodando no endereço: " << server_address << endl;
 
-    // Mantém o servidor ativo aguardando conexões
+    //mantem o server ativo
     server->Wait();
 }
 

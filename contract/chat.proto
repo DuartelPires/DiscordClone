@@ -17,6 +17,16 @@ message SendResponse {
   string error_msg = 2;
 }
 
+message UserIdRequest {
+  string name = 1;
+}
+
+message UserIdResponse {
+  int32 user_id = 1;
+}
+
 service ChatService{
   rpc EnviarMensagem(SendRequest) returns (SendResponse);
+  rpc EnviarUserId(UserIdRequest) returns (UserIdResponse);
+  rpc LerMensagens(UserIdRequest) returns (stream ChatMessage);
 }

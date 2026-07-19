@@ -11,11 +11,10 @@ find_package(absl REQUIRED COMPONENTS flags flags_parse log strings)
 find_program(PROTOC_PATH protoc)
 find_program(GRPC_CPP_PLUGIN_PATH grpc_cpp_plugin)
 
-# Geração automática dos arquivos .pb.h e .pb.cc
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS helloworld.proto)
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS chat.proto)
 
-set(GRPC_SRCS "${CMAKE_CURRENT_BINARY_DIR}/helloworld.grpc.pb.cc")
-set(GRPC_HDRS "${CMAKE_CURRENT_BINARY_DIR}/helloworld.grpc.pb.h")
+set(GRPC_SRCS "${CMAKE_CURRENT_BINARY_DIR}/chat.grpc.pb.cc")
+set(GRPC_HDRS "${CMAKE_CURRENT_BINARY_DIR}/chat.grpc.pb.h")
 
 add_custom_command(
     OUTPUT "${GRPC_SRCS}" "${GRPC_HDRS}"
@@ -23,8 +22,8 @@ add_custom_command(
     ARGS --grpc_out="${CMAKE_CURRENT_BINARY_DIR}"
          --plugin=protoc-gen-grpc="${GRPC_CPP_PLUGIN_PATH}"
          -I "${CMAKE_CURRENT_SOURCE_DIR}"
-         "${CMAKE_CURRENT_SOURCE_DIR}/helloworld.proto"
-    DEPENDS helloworld.proto
+         "${CMAKE_CURRENT_SOURCE_DIR}/chat.proto"
+    DEPENDS chat.proto
 )
 
 # Configura o Servidor
